@@ -7,5 +7,11 @@ app = FastAPI()
 async def read_item(req: Request):
     body = await req.json()
     event = req.headers.get("X-Github-Event")
+    print(type(body))
     print(event)
-    if event == "pull_request":
+    pr_status = body["pull_request"]["merged"]
+    if event == "pull_request" and pr_status == True:
+        print("PR number is: ", body["number"])
+        print("Created by: ",  body["sender"]["login"])
+        print("No. of Files Changed: ",  body["changed_files"])
+
