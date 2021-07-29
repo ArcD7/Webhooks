@@ -20,7 +20,7 @@ async def read_item(req: Request):
             print("Head branch is:", body["pull_request"]["head"]["ref"])
             print("Base branch is:", body["pull_request"]["base"]["ref"])
             print("No. of Files Changed:",  body["pull_request"]["changed_files"])
-            subprocess.call("/home/archit/Webhooks/pull.sh")
+            subprocess.call("/path/to/script")
         else:
             print("A new Pull Request has been generated for:", body["pull_request"]["head"]["repo"]["name"])
             print("PR number is:", body["number"])
