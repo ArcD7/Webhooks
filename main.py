@@ -11,6 +11,7 @@ async def read_item(req: Request):
     print("Event Type:", event)
     if event == "pull_request":
         pr_status = body["pull_request"]["merged"]
+        print("PR status:", body["action"])
         print("Is Merged:", pr_status)
         if event == "pull_request" and pr_status == True:
             print("A new Pull Request has been merged for:", body["pull_request"]["head"]["repo"]["name"])
@@ -25,3 +26,6 @@ async def read_item(req: Request):
             print("A new Pull Request has been generated for:", body["pull_request"]["head"]["repo"]["name"])
             print("PR number is:", body["number"])
             print("Created by:",  body["sender"]["login"])
+    else:
+        print("Event Type:", event)
+
