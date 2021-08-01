@@ -29,3 +29,11 @@ async def read_item(req: Request):
     else:
         print("Event Type:", event)
 
+def verify_signature(body, hash_val):
+    hmac_hash = hmac.new(str(os.environ['SECRET_TOKEN']).encode("utf-8"), str(body).encode("utf-8"), digestmod=sha256)
+    expected_signature = hmac_hash.hexdigest()
+    print(expected_signature)
+    if expected_signature != hash_val:
+        raise Exception('Warning: the webhook signatures do not match!')
+    print('The webhook signatures match!')
+
