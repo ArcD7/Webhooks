@@ -1,5 +1,5 @@
 #!/usr/bin/expect -f
-cd /home/archit/Webhooks/pull
+cd /home/archit/Webhooks
 spawn git pull
 #expect "name"
 #send "<Username>\r"
