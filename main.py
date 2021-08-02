@@ -12,7 +12,7 @@ app = FastAPI()
 async def read_item(req: Request):
     body = await req.json()
     event = req.headers.get("X-Github-Event")
-    hash_val = req.headers.get("HTTP_X_HUB_SIGNATURE_256")
+    hash_val = req.headers.get("X-Hub-Signature-256")
     verify_signature(body, hash_val)
     print("Event Type:", event)
     if event == "pull_request":
@@ -37,6 +37,7 @@ def verify_signature(body, hash_val):
     hmac_hash = hmac.new(str(os.environ['SECRET_TOKEN']).encode("utf-8"), str(body).encode("utf-8"), digestmod=sha256)
     expected_signature = hmac_hash.hexdigest()
     print(expected_signature)
+    print(hash_val)
     if expected_signature != hash_val:
         raise Exception('Warning: the webhook signatures do not match!')
     print('The webhook signatures match!')
