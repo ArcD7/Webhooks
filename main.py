@@ -30,19 +30,15 @@ async def read_item(req: Request):
                 print("Head branch is:", body["pull_request"]["head"]["ref"])
                 print("Base branch is:", body["pull_request"]["base"]["ref"])
                 print("No. of Files Changed:",  body["pull_request"]["changed_files"])
-                subprocess.call("/home/archit/Webhooks/pull.sh")
+                subprocess.call("/path/to/script")
             else:
                 print("A new Pull Request has been generated for:", body["pull_request"]["head"]["repo"]["name"])
                 print("PR number is:", body["number"])
                 print("Created by:",  body["sender"]["login"])
     else:
-        raise HTTPException(status_code=401, detail="Unauthorized: Invlaid Token")
+        raise HTTPException(status_code=401, detail="Invlaid Token")
 
 def verify_signature(pyld_bdy, hash_val):
     hmac_hash = hmac.new(os.environ['SECRET_TOKEN'].encode("utf-8"), pyld_bdy, digestmod=sha256)
     expected_signature = "sha256=" + hmac_hash.hexdigest()
     return hmac.compare_digest(expected_signature, hash_val)
-    #if hmac.compare_digest(expected_signature, hash_val):
-    #    print('The webhook signatures match!')
-    #else:
-    #    print("The webhook signatures doesn't match!")
