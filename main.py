@@ -1,7 +1,6 @@
 from fastapi import FastAPI, Request, HTTPException
 import subprocess
 import os
-import base64
 from hashlib import sha256
 import hmac
 import json
@@ -13,9 +12,9 @@ app = FastAPI()
 async def read_item(req: Request):
     body = await req.json()
     event = req.headers.get("X-Github-Event")
-    hash_val = req.headers.get("X-Hub-Signature-256")
-    pyld_bdy = await req.body()
-    status = verify_signature(pyld_bdy, hash_val)
+    hash_value = req.headers.get("X-Hub-Signature-256")
+    payload_body = await req.body()
+    status = verify_signature(payload_body, hash_value)
     if status:
         print("Event Type:", event)
         if event == "pull_request":
@@ -30,7 +29,7 @@ async def read_item(req: Request):
                 print("Head branch is:", body["pull_request"]["head"]["ref"])
                 print("Base branch is:", body["pull_request"]["base"]["ref"])
                 print("No. of Files Changed:",  body["pull_request"]["changed_files"])
-                subprocess.call("/path/to/script")
+                subprocess.run("/path/to/script", env={"name" : "string or variable to be passed")
             else:
                 print("A new Pull Request has been generated for:", body["pull_request"]["head"]["repo"]["name"])
                 print("PR number is:", body["number"])
@@ -38,7 +37,7 @@ async def read_item(req: Request):
     else:
         raise HTTPException(status_code=401, detail="Invlaid Token")
 
-def verify_signature(pyld_bdy, hash_val):
-    hmac_hash = hmac.new(os.environ['SECRET_TOKEN'].encode("utf-8"), pyld_bdy, digestmod=sha256)
+def verify_signature(payload_body, hash_value):
+    hmac_hash = hmac.new(os.environ['SECRET_TOKEN'].encode("utf-8"), payload_body, digestmod=sha256)
     expected_signature = "sha256=" + hmac_hash.hexdigest()
-    return hmac.compare_digest(expected_signature, hash_val)
+    return hmac.compare_digest(expected_signature, hash_value)
