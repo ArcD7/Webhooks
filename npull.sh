@@ -1,4 +1,7 @@
-#!/bin/bash
+#!/bin/bash -i
+ssh
+ssh_add
+
 cd /home/archit/Webhooks
 echo "$BRANCH"
 
@@ -11,7 +14,7 @@ echo "$git_status"
 #check the current branch is same as git branch output
 if [ $git_branch=="local" ]; then
 	if [ "$git_status"=="Changes to be committed" ]; then
-		git stash
+		echo "git stash"
 		git pull
 	else
 		git pull
