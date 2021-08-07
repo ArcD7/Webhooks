@@ -3,13 +3,13 @@ ssh
 ssh_add
 
 cd /path/to/script
-echo "$BRANCH"
+#echo "$BRANCH"
 
 current_branch=$(git branch | grep "*" | sed 's/*//' | sed 's/^ *//g')
-echo "$git_branch"
+#echo "$current_branch"
 
 git_status=$(git status | grep "Changes to be committed")
-echo "$git_status"
+#echo "$git_status"
 
 #check the current branch is same as git branch output
 if [ $current_branch==$BRANCH ]; then
