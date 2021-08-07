@@ -44,4 +44,4 @@ async def read_item(req: Request):
 def verify_signature(payload_body, request_hash):
     hmac_hash = hmac.new(os.environ['SECRET_TOKEN'].encode("utf-8"), payload_body, digestmod=sha256)
     expected_signature = "sha256=" + hmac_hash.hexdigest()
-    return hmac.compare_digest(expected_signature, hash_val)
+    return hmac.compare_digest(expected_signature, request_hash)
