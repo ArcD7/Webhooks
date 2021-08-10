@@ -14,7 +14,6 @@ async def read_item(req: Request):
     event = req.headers.get("X-Github-Event") # Extracts the type of EVENT from the request header. 
     request_hash = req.headers.get("X-Hub-Signature-256") # Extracts the hash value from the request header.
     payload_body = await req.body() # Payload body in bytes, required for creating hash locally.
-    
     # We need to verify whether the request is coming from the right source(GitHub).
     verify = verify_signature(payload_body, request_hash)
     # If the request is verified, then we'll proceed with our process.
@@ -35,6 +34,7 @@ async def read_item(req: Request):
                 branch = body["pull_request"]["base"]["ref"]
                 print("Base branch is:", body["pull_request"]["base"]["ref"])
                 print("No. of Files Changed:",  body["pull_request"]["changed_files"])
+                # Running the script that will run git along with the branch name as an ENV variable.
                 subprocess.run("/path/to/sub-script", env={"BRANCH" : branch})
             else: # This will run if PR is open. 
                 print("A new Pull Request has been generated for:", body["pull_request"]["head"]["repo"]["name"])
@@ -47,5 +47,8 @@ async def read_item(req: Request):
 # Returns a Boolean values
 def verify_signature(payload_body, request_hash):
     hmac_hash = hmac.new(os.environ['SECRET_TOKEN'].encode("utf-8"), payload_body, digestmod=sha256)
+    # Returns a string with only hexadecimal digits.
     expected_signature = "sha256=" + hmac_hash.hexdigest() # Prefix added as per GitHub Signature format.
+    # compare_digest should be used for comparing hashes rather than "==".
+    # https://docs.python.org/3/library/hmac.html#hmac.compare_digest
     return hmac.compare_digest(expected_signature, request_hash)
