@@ -13,7 +13,7 @@ staged_commits="Changes to be committed"
 unstaged_commits="Changes not staged for commit"
 
 # Checks whether the current branch is same as the branch for which the PR has been generated.
-if [ $current_branch==$BRANCH ]; then
+if [[ "$current_branch" == "$BRANCH" ]]; then
 	# If the branch is same and there are changes to be commited then,
         if [[ "$git_status" == "$staged_commits" || "$git_status" == "$unstaged_commits" ]]; then
                 git stash 			# Stash the code
