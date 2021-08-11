@@ -8,7 +8,9 @@ cd /path/to/directory # The path to your git repository.
 current_branch=$(git branch | grep "*" | sed 's/*//' | sed 's/^ *//g')
 
 # This command will check the current status of the branch for any commited or uncommited file.
-git_status=$(git status | grep "Changes to be committed")
+git_status=$(git status | sed -n '2p' | sed 's/:\+$//')
+unstaged_commits="Changes to be committed"
+staged_commits=""
 
 # Checks whether the current branch is same as the branch for which the PR has been generated.
 if [ $current_branch==$BRANCH ]; then
