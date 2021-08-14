@@ -22,28 +22,28 @@ async def read_item(req: Request):
     verify = verify_signature(payload_body, request_hash)
     # If the request is verified, then we'll proceed with our process.
     if verify:
-        print("Event Type:",  Yellow + event + NC)
+        print("Event Type:", Yellow + event + NC)
         # This checks for the Event type - eg: pull_request, ping, push.
         if event == "pull_request":
             pr_status = body["pull_request"]["merged"] # THis specifies whether PR is merged or not.
-            print("PR Status:",  Yellow + body["action"] + NC) # Action parameter specifies whether the PR is OPEN or CLOSED.
-            print("Is Merged:",  Yellow + str(pr_status) + NC)
+            print("PR Status:", Yellow + body["action"] + NC) # Action parameter specifies whether the PR is OPEN or CLOSED.
+            print("Is Merged:", Yellow + str(pr_status) + NC)
             # We'll proceed with the git pull process only if Event type is PR and is closed.
             if event == "pull_request" and pr_status == True:
-                print("A new Pull Request has been merged for:",  Yellow + body["pull_request"]["head"]["repo"]["name"] + NC)
-                print("Title of PR:",  Yellow + body["pull_request"]["title"] + NC)
-                print("PR number is:",  Yellow + str(body["number"]) + NC)
-                print("Created by:",  body["sender"]["login"])
-                print("Head branch is:", body["pull_request"]["head"]["ref"])
+                print("A new Pull Request has been merged for:", Yellow + body["pull_request"]["head"]["repo"]["name"] + NC)
+                print("Title of PR:", Yellow + body["pull_request"]["title"] + NC)
+                print("PR number is:", Yellow + str(body["number"]) + NC)
+                print("Created by:", Yellow + body["sender"]["login"] + NC)
+                print("Head branch is:", Yellow + body["pull_request"]["head"]["ref"] + NC)
                 branch = body["pull_request"]["base"]["ref"]
-                print("Base branch is:", body["pull_request"]["base"]["ref"])
-                print("No. of Files Changed:",  body["pull_request"]["changed_files"])
+                print("Base branch is:", Yellow + body["pull_request"]["base"]["ref"] + NC)
+                print("No. of Files Changed:", Yellow + str(body["pull_request"]["changed_files"]) + NC)
                 # Running the script that will run git along with the branch name as an ENV variable.
                 subprocess.run("/path/to/sub-script", env={"BRANCH" : branch})
             else: # This will run if PR is open. 
-                print("A new Pull Request has been generated for:", body["pull_request"]["head"]["repo"]["name"])
-                print("PR number is:", body["number"])
-                print("Created by:",  body["sender"]["login"])
+                print("A new Pull Request has been generated for:", Yellow + body["pull_request"]["head"]["repo"]["name"] + NC)
+                print("PR number is:", Yellow + str(body["number"]) + NC)
+                print("Created by:",  Yellow + body["sender"]["login"] + NC)
     else:
         raise HTTPException(status_code=401, detail="Invlaid Token")
 
