@@ -7,6 +7,10 @@ import json
 
 app = FastAPI()
 
+Yellow='\033[1;33m'
+NC='\033[0m' # No Color
+
+
 
 @app.post("/payload")
 async def read_item(req: Request):
@@ -18,17 +22,17 @@ async def read_item(req: Request):
     verify = verify_signature(payload_body, request_hash)
     # If the request is verified, then we'll proceed with our process.
     if verify:
-        print("Event Type:", event)
+        print("Event Type:",  Yellow + event + NC)
         # This checks for the Event type - eg: pull_request, ping, push.
         if event == "pull_request":
             pr_status = body["pull_request"]["merged"] # THis specifies whether PR is merged or not.
-            print("PR Status:", body["action"]) # Action parameter specifies whether the PR is OPEN or CLOSED.
-            print("Is Merged:", pr_status)
+            print("PR Status:",  Yellow + body["action"] + NC) # Action parameter specifies whether the PR is OPEN or CLOSED.
+            print("Is Merged:",  Yellow + str(pr_status) + NC)
             # We'll proceed with the git pull process only if Event type is PR and is closed.
             if event == "pull_request" and pr_status == True:
-                print("A new Pull Request has been merged for:", body["pull_request"]["head"]["repo"]["name"])
-                print("Title of PR:", body["pull_request"]["title"])
-                print("PR number is:", body["number"])
+                print("A new Pull Request has been merged for:",  Yellow + body["pull_request"]["head"]["repo"]["name"] + NC)
+                print("Title of PR:",  Yellow + body["pull_request"]["title"] + NC)
+                print("PR number is:",  Yellow + str(body["number"]) + NC)
                 print("Created by:",  body["sender"]["login"])
                 print("Head branch is:", body["pull_request"]["head"]["ref"])
                 branch = body["pull_request"]["base"]["ref"]
