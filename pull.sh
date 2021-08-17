@@ -2,10 +2,15 @@
 ssh # An alias in bashrc which run the ssh-agent.
 ssh_add # An alias in bashrc which provides the private key to the agent.
 
+# Colored outputs.
+Yellow='\033[1;33m'
+NC='\033[0m' # No Color
+
 cd /path/to/directory # The path to your git repository.
 
 # This command will save the name of current branch in a variable.
 current_branch=$(git branch | grep "*" | sed 's/*//' | sed 's/^ *//g')
+echo -e "Current branch: ${Yellow}$current_branch${NC}"
 
 # This command will check the current status of the branch for any commited or uncommited file.
 git_status=$(git status | sed -n '2p' | sed 's/:\+$//')
