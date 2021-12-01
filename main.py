@@ -5,6 +5,9 @@ from hashlib import sha256
 import hmac
 import json
 
+import logging
+logging.basicConfig(filename='/home/ubuntu/logs/CiCd.log', filemode='a', format='%(asctime)s - %(message)s', datefmt='%d-%m-%y %H:%M:%S', level=logging.INFO)
+
 app = FastAPI()
 
 Yellow='\033[1;33m'
@@ -22,29 +25,39 @@ async def read_item(req: Request):
     verify = verify_signature(payload_body, request_hash)
     # If the request is verified, then we'll proceed with our process.
     if verify:
-        print("Event Type:", Yellow + event + NC)
+        #print("Event Type:", Yellow + event + NC)
         # This checks for the Event type - eg: pull_request, ping, push.
         if event == "pull_request":
             pr_status = body["pull_request"]["merged"] # THis specifies whether PR is merged or not.
-            print("PR Status:", Yellow + body["action"] + NC) # Action parameter specifies whether the PR is OPEN or CLOSED.
-            print("Is Merged:", Yellow + str(pr_status) + NC)
+            #print("PR Status:", Yellow + body["action"] + NC) # Action parameter specifies whether the PR is OPEN or CLOSED.
+            #print("Is Merged:", Yellow + str(pr_status) + NC)
             # We'll proceed with the git pull process only if Event type is PR and is closed.
             if event == "pull_request" and pr_status == True:
-                print("A new Pull Request has been merged for:", Yellow + body["pull_request"]["head"]["repo"]["name"] + NC)
-                print("Title of PR:", Yellow + body["pull_request"]["title"] + NC)
-                print("PR number is:", Yellow + str(body["number"]) + NC)
-                print("Created by:", Yellow + body["sender"]["login"] + NC)
-                print("Head branch is:", Yellow + body["pull_request"]["head"]["ref"] + NC)
+                #print("A new Pull Request has been merged for:", Yellow + body["pull_request"]["head"]["repo"]["name"] + NC)
+                #print("Title of PR:", Yellow + body["pull_request"]["title"] + NC)
+                #print("PR number is:", Yellow + str(body["number"]) + NC)
+                PR_Number = str(body["number"])
+                #print("Created by:", Yellow + body["sender"]["login"] + NC)
+                #print("Head branch is:", Yellow + body["pull_request"]["head"]["ref"] + NC)
+                head = body["pull_request"]["head"]["ref"]
                 branch = body["pull_request"]["base"]["ref"]
-                print("Base branch is:", Yellow + body["pull_request"]["base"]["ref"] + NC)
-                print("No. of Files Changed:", Yellow + str(body["pull_request"]["changed_files"]) + NC)
+                #print("Base branch is:", Yellow + body["pull_request"]["base"]["ref"] + NC)
+                #print("No. of Files Changed:", Yellow + str(body["pull_request"]["changed_files"]) + NC)
                 # Running the script that will run git along with the branch name as an ENV variable.
-                subprocess.run("/path/to/sub-script", env={"BRANCH" : branch})
+                subprocess.run("/home/ubuntu/server/Webhooks/pull.sh", env={"BRANCH" : branch})
+                logging.info(f'PR-{PR_Number} has been merged to branch {branch} from branch {head}')
             else: # This will run if PR is open. 
-                print("A new Pull Request has been generated for:", Yellow + body["pull_request"]["head"]["repo"]["name"] + NC)
-                print("PR number is:", Yellow + str(body["number"]) + NC)
-                print("Created by:",  Yellow + body["sender"]["login"] + NC)
+                #print("A new Pull Request has been generated for:", Yellow + body["pull_request"]["head"]["repo"]["name"] + NC)
+                #print("PR number is:", Yellow + str(body["number"]) + NC)
+                PR_Number = str(body["number"])
+                #print("Created by:",  Yellow + body["sender"]["login"] + NC)
+                Created_By =  body["sender"]["login"]
+                base = body["pull_request"]["base"]["ref"]
+                head = body["pull_request"]["head"]["ref"]
+                status = body["action"]
+                logging.info(f'PR-{PR_Number} has been {status} by {Created_By} for branch {base} from branch {head}')
     else:
+        logging.info("Invalid Token. Stop trying!!")
         raise HTTPException(status_code=401, detail="Invlaid Token")
 
 # This function creates a hash from the secret token and then compares it with the one that was in the request. 
