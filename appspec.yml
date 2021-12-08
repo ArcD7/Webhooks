@@ -1,7 +1,12 @@
 version: 0.0
 os: linux
 hooks:
-  AfterPull:
+  ApplicationStop:
+    - location: scripts/stop_server.sh
+      timeout: 300
+      runas: ubuntu
+  ApplicationStart:
     - location: scripts/start_server.sh
       timeout: 300
       runas: ubuntu
+
