@@ -1,3 +1,3 @@
 #!/bin/bash
-
+echo Stoping Server....
 sudo systemctl restart supervisor.service
