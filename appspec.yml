@@ -6,11 +6,11 @@ files:
     destination: /home/ubuntu/server/Webhooks
 hooks:
   ApplicationStop:
-    - location: /home/ubuntu/scripts/stop_server.sh
+    - location: scripts/stop_server.sh
       timeout: 300
       runas: ubuntu
   ApplicationStart:
-    - location: /home/ubuntu/scripts/start_server.sh
+    - location: scripts/start_server.sh
       timeout: 300
       runas: ubuntu
 
