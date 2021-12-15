@@ -1,5 +1,5 @@
 #!/bin/sh
 
-source /home/server/fastapi/bin/activate 
-pip3 install -r requirements.txt
+source /home/ubuntu/server/fastapi/bin/activate 
+pip3 install -r /home/ubuntu/server/Webhooks/requirements.txt
 deactivate
