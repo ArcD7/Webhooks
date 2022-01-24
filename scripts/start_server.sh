@@ -1,3 +1,3 @@
 #!/bin/bash
 echo Starting Server.....
-sudo systemctl restart supervisor.service
+#sudo systemctl restart supervisor.service
