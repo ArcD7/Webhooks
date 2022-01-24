@@ -1,1 +1,10 @@
 sympy==1.9
+amqp==5.0.6
+aniso8601==7.0.0
+argon2-cffi==20.1.0
+asgiref==3.3.4
+attrs==21.2.0
+autobahn==21.3.1
+Automat==20.2.0
+bcrypt==3.2.0
+beautifulsoup4==4.9.3
